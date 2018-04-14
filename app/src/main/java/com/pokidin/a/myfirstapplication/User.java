@@ -2,7 +2,7 @@ package com.pokidin.a.myfirstapplication;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private String mLogin;
     private String mPassword;

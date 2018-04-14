@@ -24,7 +24,7 @@ public class AuthFragment extends Fragment {
 
     public static AuthFragment newInstance() {
         Bundle args = new Bundle();
-        
+
         AuthFragment fragment = new AuthFragment();
         fragment.setArguments(args);
         return fragment;
@@ -38,7 +38,6 @@ public class AuthFragment extends Fragment {
                 startProfileIntent.putExtra(ProfileActivity.USER_KEY,
                         new User(mLogin.getText().toString(), mPassword.getText().toString()));
                 startActivity(startProfileIntent);
-
             } else {
                 showMessage(R.string.login_input_error);
             }
@@ -48,7 +47,8 @@ public class AuthFragment extends Fragment {
     private View.OnClickListener mOnRegisterClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-// todo обработка нажатия по кнопке
+            getFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
+                    RegistrationFragment.newInstance()).commit();
         }
     };
 
@@ -68,7 +68,7 @@ public class AuthFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fr_auth, container,false);
+        View view = inflater.inflate(R.layout.fr_auth, container, false);
 
         mLogin = view.findViewById(R.id.etLogin);
         mPassword = view.findViewById(R.id.etPassword);

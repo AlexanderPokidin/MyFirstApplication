@@ -6,4 +6,8 @@
     <string name="login_enter">Войти</string>
     <string name="login_input_error">Ошибка ввода данных!</string>
     <string name="email">E-mail</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="login_register_success">Успешно!</string>
+    <string name="login_register_error">Login уже занят!</string>
+
 </resources>
