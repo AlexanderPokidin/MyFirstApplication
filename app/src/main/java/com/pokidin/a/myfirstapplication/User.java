@@ -6,6 +6,8 @@ public class User implements Serializable {
 
     private String mLogin;
     private String mPassword;
+    private String mPhotoUri;
+    private boolean mHasSuccessLogin;
 
     public User(String login, String password) {
         mLogin = login;
@@ -27,5 +29,21 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         mPassword = password;
+    }
+
+    public String getPhotoUri() {
+        return mPhotoUri;
+    }
+
+    public void setPhotoUri(String photoUri) {
+        mPhotoUri = photoUri;
+    }
+
+    public boolean hasSuccessLogin() {
+        return mHasSuccessLogin;
+    }
+
+    public void setHasSuccessLogin(boolean hasSuccessLogin) {
+        mHasSuccessLogin = hasSuccessLogin;
     }
 }

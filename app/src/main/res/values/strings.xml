@@ -11,5 +11,6 @@
     <string name="login_register_error">Login уже занят!</string>
     <string name="login_error">Ошибка логина. Неверный логин ии пароль.</string>
     <string name="logout">Логаут</string>
+    <string name="input_error">Ошибка ввода данных!</string>
 
 </resources>

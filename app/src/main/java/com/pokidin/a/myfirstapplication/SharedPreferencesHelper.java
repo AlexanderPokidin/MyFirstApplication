@@ -39,4 +39,39 @@ public class SharedPreferencesHelper {
         mSharedPreferences.edit().putString(USERS_KEY, mGson.toJson(users, USERS_TYPE)).apply();
         return true;
     }
+
+    public boolean saveOrOverrideUser(User user) {
+        List<User> users = getUsers();
+        for (User u : users) {
+            if (u.getLogin().equalsIgnoreCase(user.getLogin())) {
+                return false;
+            }
+        }
+        users.add(user);
+        mSharedPreferences.edit().putString(USERS_KEY, mGson.toJson(user, USERS_TYPE)).apply();
+        return true;
+    }
+
+    public List<String> getSuccessLogins() {
+        List<String> successLogins = new ArrayList<>();
+        List<User> allUsers = getUsers();
+        for (User user : allUsers) {
+            if (user.hasSuccessLogin()) {
+                successLogins.add(user.getLogin());
+            }
+        }
+        return successLogins;
+    }
+
+    public boolean login(User user) {
+        List<User> users = getUsers();
+        for (User u : users) {
+            if (u.getLogin().equalsIgnoreCase(user.getLogin())
+                    && u.getPassword().equals(user.getPassword())) {
+                u.setHasSuccessLogin(true);
+                mSharedPreferences.edit().putString(USERS_KEY, mGson.toJson(users, USERS_TYPE)).apply();
+            }
+        }
+        return false;
+    }
 }

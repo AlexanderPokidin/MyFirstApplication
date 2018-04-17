@@ -11,17 +11,21 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class AuthFragment extends Fragment {
 
-    private EditText mLogin;
+    private AutoCompleteTextView mLogin;
     private EditText mPassword;
     private Button mEnter;
     private Button mRegister;
     private SharedPreferencesHelper mSharedPreferencesHelper;
+
+    private ArrayAdapter<String> mLoginedUsersAdapter;
 
     public static AuthFragment newInstance() {
         Bundle args = new Bundle();
@@ -34,24 +38,26 @@ public class AuthFragment extends Fragment {
     private View.OnClickListener mOnEnterClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            boolean isLoginSuccess = false;
-            for (User user : mSharedPreferencesHelper.getUsers()) {
+            if (isEmailValid() && isPasswordValid()){
+                if (mSharedPreferencesHelper.login(new User(
+                        mLogin.getText().toString(), mPassword.getText().toString()))){
+                    Intent startProfileIntent = new Intent(getActivity(), ProfileActivity.class);
+                    startProfileIntent.putExtra(ProfileActivity.USER_KEY, new User(
+                            mLogin.getText().toString(), mPassword.getText().toString()));
+                    startActivity(startProfileIntent);
+                    getActivity().finish();
+                } else {
+                    showMessage(R.string.login_error);
+                }
+            } else {
+                showMessage(R.string.input_error);
+            }
+
+            for (User  user : mSharedPreferencesHelper.getUsers()) {
                 if (user.getLogin().equalsIgnoreCase(mLogin.getText().toString())
                         && user.getPassword().equals(mPassword.getText().toString())) {
-                    isLoginSuccess = true;
-                    if (isEmailValid() && isPasswordValid()) {
-                        Intent startProfileIntent = new Intent(getActivity(), ProfileActivity.class);
-                        startProfileIntent.putExtra(ProfileActivity.USER_KEY,
-                                new User(mLogin.getText().toString(), mPassword.getText().toString()));
-                        startActivity(startProfileIntent);
-                    } else {
-                        showMessage(R.string.login_input_error);
-                    }
                     break;
                 }
-            }
-            if (!isLoginSuccess) {
-                showMessage(R.string.login_error);
             }
         }
     };
@@ -65,6 +71,15 @@ public class AuthFragment extends Fragment {
                             RegistrationFragment.newInstance())
                     .addToBackStack(RegistrationFragment.class.getName())
                     .commit();
+        }
+    };
+
+    private View.OnFocusChangeListener mOnLoginFocusChangeListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus){
+                mLogin.showDropDown();
+            }
         }
     };
 
@@ -95,6 +110,13 @@ public class AuthFragment extends Fragment {
 
         mEnter.setOnClickListener(mOnEnterClickListener);
         mRegister.setOnClickListener(mOnRegisterClickListener);
+        mLogin.setOnFocusChangeListener(mOnLoginFocusChangeListener);
+
+        mLoginedUsersAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                mSharedPreferencesHelper.getSuccessLogins());
+
+        mLogin.setAdapter(mLoginedUsersAdapter);
 
         return view;
     }
