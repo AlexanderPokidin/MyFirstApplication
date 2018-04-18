@@ -1,6 +1,8 @@
 package com.pokidin.a.myfirstapplication;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 
 public class ProfileActivity extends AppCompatActivity {
     public static String USER_KEY = "USER_KEY";
+    public static int REQUEST_CODE_GET_PHOTO = 101;
+
 
     private AppCompatImageView mPhoto;
     private TextView mLogin;
@@ -21,9 +25,28 @@ public class ProfileActivity extends AppCompatActivity {
     View.OnClickListener mOnPhotoClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            openGallery();
         }
     };
+
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, REQUEST_CODE_GET_PHOTO);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_GET_PHOTO
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            Uri photoUri = data.getData();
+            mPhoto.setImageURI(photoUri);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

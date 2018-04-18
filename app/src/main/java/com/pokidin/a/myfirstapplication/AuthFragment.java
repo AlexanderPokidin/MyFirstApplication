@@ -38,12 +38,12 @@ public class AuthFragment extends Fragment {
     private View.OnClickListener mOnEnterClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (isEmailValid() && isPasswordValid()){
-                if (mSharedPreferencesHelper.login(new User(
-                        mLogin.getText().toString(), mPassword.getText().toString()))){
+            if (isEmailValid() && isPasswordValid()) {
+                User user = mSharedPreferencesHelper.login(
+                        mLogin.getText().toString(), mPassword.getText().toString());
+                if (user != null) {
                     Intent startProfileIntent = new Intent(getActivity(), ProfileActivity.class);
-                    startProfileIntent.putExtra(ProfileActivity.USER_KEY, new User(
-                            mLogin.getText().toString(), mPassword.getText().toString()));
+                    startProfileIntent.putExtra(ProfileActivity.USER_KEY, user);
                     startActivity(startProfileIntent);
                     getActivity().finish();
                 } else {
@@ -53,7 +53,7 @@ public class AuthFragment extends Fragment {
                 showMessage(R.string.input_error);
             }
 
-            for (User  user : mSharedPreferencesHelper.getUsers()) {
+            for (User user : mSharedPreferencesHelper.getUsers()) {
                 if (user.getLogin().equalsIgnoreCase(mLogin.getText().toString())
                         && user.getPassword().equals(mPassword.getText().toString())) {
                     break;
@@ -77,7 +77,7 @@ public class AuthFragment extends Fragment {
     private View.OnFocusChangeListener mOnLoginFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus){
+            if (hasFocus) {
                 mLogin.showDropDown();
             }
         }
